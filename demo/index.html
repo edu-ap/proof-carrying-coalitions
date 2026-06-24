@@ -83,7 +83,7 @@ const P = window.PCC;
 const REPO = "https://github.com/edu-ap/proof-carrying-coalitions";
 // Source repo is open-sourced separately; until it is public, keep this honest
 // (no dead link). Flip back to a live REPO link when the public repo exists.
-(function(){ const rl=document.getElementById("repolink"); rl.textContent="open-sourcing shortly"; rl.removeAttribute("href"); })();
+document.getElementById("repolink").href = REPO;  // public repo is live
 
 // in-page self-test: engine must match the Lean verdicts
 (function(){
