@@ -23,7 +23,7 @@ ALLOW = {"propext", "Quot.sound", "Classical.choice"}
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEAN = os.path.join(HERE, "lean")
 # theorem-bearing files -> namespace prefix
-FILES = {"Spec/Theorems.lean": "ARIA.", "Spec/PRD.lean": "ARIA.PRD."}
+FILES = {"Spec/Theorems.lean": "ARIA.", "Spec/Monotone.lean": "ARIA."}
 DECL = re.compile(r"^\s*theorem\s+([A-Za-z_][A-Za-z0-9_']*)", re.M)
 
 

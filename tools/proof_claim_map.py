@@ -25,7 +25,11 @@ import sys
 
 CLAIM = re.compile(r"\[proof:\s*([^\]]+)\]")
 # name + statement up to the first ':=' (the proof binding); group(2) = binders+type
-DECL = re.compile(r"(?:theorem|lemma)\s+([A-Za-z_][A-Za-z0-9_'.]*)((?:.|\n)*?):=", re.M)
+# Terminate each declaration at the proof binding ':=' OR an equation clause
+# ('\n  | ...'); equation-form theorems have no ':=', and without the second
+# alternative the non-greedy capture swallows the NEXT theorem name (false-negative).
+DECL = re.compile(
+    r"(?:theorem|lemma)\s+([A-Za-z_][A-Za-z0-9_'.]*)((?:.|\n)*?)(?=:=|\n\s*\|)", re.M)
 BINDER = re.compile(r"∀|∃|[({]\s*[A-Za-z_][A-Za-z0-9_']*\s*:")
 FENCE = re.compile(r"^\s*```")
 PLACEHOLDERS = {"NAME", "NAME1", "NAME2", "THEOREM", "..."}

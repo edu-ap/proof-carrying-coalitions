@@ -20,6 +20,7 @@
 -/
 import Spec.Model
 import Spec.Theorems
+import Spec.Monotone
 
 namespace ARIA
 open Capability

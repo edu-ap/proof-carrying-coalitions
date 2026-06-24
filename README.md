@@ -35,8 +35,12 @@ describes. PCC uses two independent layers whose holes do not align.
   `Cl(A) ∩ F = ∅`, the Spera non-compositionality result `[proof: non_compositional | universal]`
   `[proof: per_agent_safety_insufficient | universal]`, gate soundness
   `[proof: admit_eq_safe]`, multi-step closure `[proof: chain_reaches_wireFunds]`,
-  the audit surface, incremental admission, and a universally quantified
-  monotonicity law `[proof: safe_antitone_in_forbidden | universal]`. Proofs use
+  the audit surface, incremental admission, and universally quantified
+  monotonicity laws proven by induction (not decided on fixed agents): growth
+  never removes a danger `[proof: reached_persists_under_growth | universal]`
+  `[proof: subcoalition_safe_of_safe | universal]`, the closure only adds
+  capabilities `[proof: iter_extensive | universal]`, and enlarging the forbidden
+  set never makes an unsafe coalition safe `[proof: safe_antitone_in_forbidden | universal]`. Proofs use
   `decide` (kernel reduction), **not** `native_decide`; every theorem depends only
   on Lean's standard axioms (propext, Quot.sound).
 - **Layer 2, the gates** (`tools/`): a `vacuity_lint` (rejects `sorry` / `axiom` /
