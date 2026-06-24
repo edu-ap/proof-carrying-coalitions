@@ -1,0 +1,4 @@
+lean/.lake/
+lean/build/
+**/*.olean
+AxiomCheck.lean
