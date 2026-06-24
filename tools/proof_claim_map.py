@@ -24,13 +24,19 @@ import re
 import sys
 
 CLAIM = re.compile(r"\[proof:\s*([^\]]+)\]")
-# name + statement up to the first ':=' (the proof binding); group(2) = binders+type
-# Terminate each declaration at the proof binding ':=' OR an equation clause
-# ('\n  | ...'); equation-form theorems have no ':=', and without the second
-# alternative the non-greedy capture swallows the NEXT theorem name (false-negative).
+# name + statement (group(2) = binders+type). Terminate at the proof binding ':='
+# OR at an equation/pattern-matching clause '\n  | ...' (those theorems have NO ':=',
+# e.g. `theorem foo : ... \n | 0 => ... | n+1 => ...`). Without the second
+# alternative the non-greedy capture would run past the equation-form theorem and
+# swallow the NEXT theorem's name, hiding it from the map (false-negative).
 DECL = re.compile(
     r"(?:theorem|lemma)\s+([A-Za-z_][A-Za-z0-9_'.]*)((?:.|\n)*?)(?=:=|\n\s*\|)", re.M)
-BINDER = re.compile(r"∀|∃|[({]\s*[A-Za-z_][A-Za-z0-9_']*\s*:")
+# A `| universal` claim must carry a genuine universal binder: a `∀` or an explicit
+# `(x : T)` parameter. A bare `∃` does NOT qualify - an existential is a single
+# witness (an instance fact), so existential theorems must be tagged `| instance`.
+# (Caught 2026-06-24: non_compositional / per_agent_safety_insufficient are ∃-theorems
+# that were passing the universal check on their ∃ binder and reading as ∀ in prose.)
+BINDER = re.compile(r"∀|[({]\s*[A-Za-z_][A-Za-z0-9_']*\s*:")
 FENCE = re.compile(r"^\s*```")
 PLACEHOLDERS = {"NAME", "NAME1", "NAME2", "THEOREM", "..."}
 SKIP = {".lake", "build", ".git"}
@@ -71,7 +77,12 @@ def declared(spec_dir):
             code = strip(open(os.path.join(dp, fn), encoding="utf-8", errors="replace").read())
             for m in DECL.finditer(code):
                 full = m.group(1)
-                universal = bool(BINDER.search(m.group(2)))
+                stmt = m.group(2)
+                # universal iff it carries a binder AND is not an existential statement
+                # (a bare `∃ ...` is a single-witness instance fact, even though `∃ (x:T)`
+                # matches the typed-binder branch of BINDER; require no top-level `∃`
+                # unless a `∀` is also present, e.g. `∀ x, ∃ y, ...`).
+                universal = bool(BINDER.search(stmt)) and not ("∃" in stmt and "∀" not in stmt)
                 for nm in (full, full.split(".")[-1]):
                     cur = out.get(nm)
                     out[nm] = {"universal": (cur["universal"] or universal) if cur else universal}

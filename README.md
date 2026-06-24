@@ -32,8 +32,8 @@ A single formal model can fail in two ways it cannot see: it can be **vacuous**
 describes. PCC uses two independent layers whose holes do not align.
 
 - **Layer 1, the proof.** `lean/` (Lean v4.29.1, no Mathlib). The kernel checks
-  `Cl(A) ∩ F = ∅`, the Spera non-compositionality result `[proof: non_compositional | universal]`
-  `[proof: per_agent_safety_insufficient | universal]`, gate soundness
+  `Cl(A) ∩ F = ∅`, the Spera non-compositionality result `[proof: non_compositional | instance]`
+  `[proof: per_agent_safety_insufficient | instance]`, gate soundness
   `[proof: admit_eq_safe]`, multi-step closure `[proof: chain_reaches_wireFunds]`,
   the audit surface, incremental admission, and universally quantified
   monotonicity laws proven by induction (not decided on fixed agents): growth
